@@ -5,12 +5,9 @@ month_to_number = {"jan": 1, "feb": 2, "mar": 3, "apr": 4, "mei": 5, "jun": 6,
 
 year = date.today().year
 
-def convert_to_datetime(datetime):
-    datetime = datetime.split()[1:]
-    day = datetime[0]
-    month = month_to_number[datetime[1]]
-    hour = datetime[2].split("u")[0]
-    minute = datetime[2].split("u")[1]
-    formatted_date_time = f"{year}-{month}-{day} {hour}:{minute}"
-    return formatted_date_time
 
+def convert_to_datetime(day: str, month: str, hour: str, minute: str):
+    month = month.strip()[:3].lower()
+    month = month_to_number[month]
+    formatted_date_time = f"{year}-{month}-{day.strip()} {hour.strip()}:{minute.strip()}"
+    return formatted_date_time
