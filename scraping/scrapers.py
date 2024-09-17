@@ -40,7 +40,7 @@ def scrape_de_cinema():
         ticket_link = div.find("div", {"class": "views-field views-field-field-ticket-link"}).text
         description = div.find("div", {"class": "views-field views-field-body"}).text
 
-        movie = Movie(date_time, 'De Studio', image_url, name, info_link, director, category, ticket_link, description)
+        movie = Movie(date_time, 'De Studio', 'Belgium', 'Antwerp', image_url, name, info_link, director, category, ticket_link, description)
 
         movies.append(movie)
 
@@ -86,7 +86,7 @@ def scrape_lumieres_and_cartoons(url):
             minute = time.split(":")[1]
             date_time = convert_to_datetime(day, month, hour, minute)
 
-            movie = Movie(date_time, 'Lumieres', image_url, title, info_url, 'No director found',
+            movie = Movie(date_time, 'Lumieres', 'Belgium', 'Antwerp', image_url, title, info_url, 'No director found',
                           'No category found', ticket_url, 'No description found')
 
             movies.append(movie)

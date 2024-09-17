@@ -1,11 +1,13 @@
 create_table_query = """
 CREATE TABLE IF NOT EXISTS movies (
-  uuid char(36) not null PRIMARY KEY,
+  uuid CHAR(36) NOT NULL PRIMARY KEY,
   title VARCHAR(255) NOT NULL,
   director VARCHAR(255) NOT NULL,
   category VARCHAR(255) NOT NULL,
   description TEXT NOT NULL,
   cinema VARCHAR(255) NOT NULL,
+  country VARCHAR(255) NOT NULL,
+  city VARCHAR(255) NOT NULL,
   date_time DATETIME NOT NULL,
   image_url VARCHAR(255) NOT NULL,
   info_link VARCHAR(255) NOT NULL,
@@ -26,7 +28,7 @@ ALTER TABLE movies MODIFY description TEXT NOT NULL
 """
 
 insert_query = """
-INSERT INTO movies (uuid, title, director, category, description, cinema, date_time, image_url, info_link, ticket_link)
-VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+INSERT INTO movies (uuid, title, director, category, description, cinema, country, city, date_time, image_url, info_link, ticket_link)
+VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
 """
 
