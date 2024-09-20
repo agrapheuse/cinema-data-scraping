@@ -41,7 +41,6 @@ def scrape_de_cinema():
         description = div.find("div", {"class": "views-field views-field-body"}).text
 
         movie = Movie(date_time, 'De Studio', 'Belgium', 'Antwerp', image_url, name, info_link, director, category, ticket_link, description)
-
         movies.append(movie)
 
     return movies
