@@ -1,4 +1,5 @@
 import mysql.connector as mysqlclient
+from db.queries import create_table_query
 
 
 def create_connection(host, port, user, password, database):
@@ -47,8 +48,12 @@ def run_query(query):
         print("Query executed successfully.")
         return True
     except mysqlclient.Error as e:
-        print("error: ", e)
-        return False
+        if e.args[0] == 1146:
+            run_query(create_table_query)
+            run_query(query)
+        else:
+            print("error: ", e)
+            return False
 
 
 def run_insert_query(query, values):
