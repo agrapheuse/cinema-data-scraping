@@ -17,5 +17,3 @@ for index, row in movies.iterrows():
                                     row['ticket_link']))
 print("Data inserted successfully!")
 #'''
-
-
