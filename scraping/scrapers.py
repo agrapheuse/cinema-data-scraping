@@ -70,9 +70,15 @@ def scrape_lumieres_and_cartoons(name, url):
         month = date[1]
         movie_div = day_div.find_next("div", {"class": "row"})
         movie_div = movie_div.find_all("div", {"class": "show col-12 col-lg-6 mb-3"})
+
+        formatted_url = url.split(".be/")[0] + '.be/'
         for movie in movie_div:
-            image_url = movie.find("img")['src']
-            formatted_url = url.split(".be/")[0] + '.be/'
+            images = movie.findAll("img")
+            image_url = ""
+            for i in images:
+                if formatted_url in i["src"]:
+                    image_url = i["src"]
+
             info_url = formatted_url + movie.find("a")['href']
 
             title = movie.find("h4").get_text()
