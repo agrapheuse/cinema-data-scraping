@@ -37,11 +37,14 @@ def scrape_de_cinema():
             director = "No director found"
 
         category = div.find("div", {"class": "views-field views-field-field-categorie"}).text
-        ticket_link = div.find("div", {"class": "views-field views-field-field-ticket-link"}).text
+        ticket_div = div.find("div", {"class": "views-field views-field-field-ticket-link"})
+        link = ""
+        if ticket_div.find("a"):
+            link = ticket_div.find("a")["href"]
         description = div.find("div", {"class": "views-field views-field-body"}).text
 
-        movie = Movie(date_time, 'De Studio', 'Belgium', 'Antwerp', image_url, name, info_link, director, category, ticket_link, description)
-
+        movie = Movie(date_time, 'De Studio', 'Belgium', 'Antwerp', image_url, name, info_link, director, 
+                      category, link, description)
         movies.append(movie)
 
     return movies
@@ -49,15 +52,15 @@ def scrape_de_cinema():
 
 def scrape_lumieres():
     url = 'https://www.lumiere-antwerpen.be/agenda-lumiere-antwerpen/'
-    return scrape_lumieres_and_cartoons(url)
+    return scrape_lumieres_and_cartoons("lumières", url)
 
 
 def scrape_cartoons():
     url = 'https://cinemacartoons.be/agenda-cinema-cartoons/'
-    return scrape_lumieres_and_cartoons(url)
+    return scrape_lumieres_and_cartoons("cartoons", url)
 
 
-def scrape_lumieres_and_cartoons(url):
+def scrape_lumieres_and_cartoons(name, url):
     response = requests.get(url)
 
     soup = BeautifulSoup(response.text, 'html.parser')
@@ -71,9 +74,17 @@ def scrape_lumieres_and_cartoons(url):
         month = date[1]
         movie_div = day_div.find_next("div", {"class": "row"})
         movie_div = movie_div.find_all("div", {"class": "show col-12 col-lg-6 mb-3"})
+
+        formatted_url = url.split(".be/")[0] + '.be/'
         for movie in movie_div:
-            image_url = movie.find("img")['src']
-            info_url = "https://www.lumiere-antwerpen.be/" + movie.find("a")['href']
+            images = movie.findAll("img")
+            image_url = ""
+            for i in images:
+                if formatted_url in i["src"]:
+                    image_url = i["src"]
+
+            info_url = formatted_url + movie.find("a")['href']
+
             title = movie.find("h4").get_text()
 
             if "talkshow" in title.lower() or "q&a" in title.lower():
@@ -86,9 +97,28 @@ def scrape_lumieres_and_cartoons(url):
             minute = time.split(":")[1]
             date_time = convert_to_datetime(day, month, hour, minute)
 
-            movie = Movie(date_time, 'Lumieres', 'Belgium', 'Antwerp', image_url, title, info_url, 'No director found',
-                          'No category found', ticket_url, 'No description found')
+            director, description = getMoreInfo(info_url)
+
+            movie = Movie(date_time, name, 'Belgium', 'Antwerp', image_url, title, info_url, director,
+                          'No category found', ticket_url, description)
 
             movies.append(movie)
-
     return movies
+
+def getMoreInfo(url):
+    response = requests.get(url)
+
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    director_div = soup.find("div", {"class": "movie-meta my-3"})
+    director = director_div.get_text(strip=True).replace('Regisseur:', '').strip()
+
+    info_div = soup.find("div", {"class": "row"})
+    central_div = info_div.find("div", {"class": "col-md-8"})
+    p_elements = central_div.find_all("p")
+
+    description = ""
+    for p in p_elements: 
+        description += p.get_text() + " "
+
+    return director, description

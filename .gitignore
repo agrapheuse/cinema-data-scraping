@@ -166,3 +166,6 @@ infrastructure/*
 
 # idea
 .idea/*
+
+#env
+.env

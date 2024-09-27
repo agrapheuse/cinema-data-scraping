@@ -8,7 +8,6 @@ run_query(empty_table_query)
 
 # scrape the data
 movies = scrape_movie_agendas()
-print(movies)
 
 # insert the data
 #'''
@@ -18,5 +17,3 @@ for index, row in movies.iterrows():
                                     row['ticket_link']))
 print("Data inserted successfully!")
 #'''
-
-
