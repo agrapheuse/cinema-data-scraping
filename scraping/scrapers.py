@@ -37,6 +37,8 @@ def scrape_de_cinema():
             director = "No director found"
 
         category = div.find("div", {"class": "views-field views-field-field-categorie"}).text
+        if category.lower() != "film":
+            break
         ticket_div = div.find("div", {"class": "views-field views-field-field-ticket-link"})
         link = ""
         if ticket_div.find("a"):
@@ -44,9 +46,11 @@ def scrape_de_cinema():
         description = div.find("div", {"class": "views-field views-field-body"}).text
 
         movie = Movie(date_time, 'De Studio', 'Belgium', 'Antwerp', image_url, name, info_link, director, 
-                      category, link, description)
+                      category, link, description)        
+        
         movies.append(movie)
 
+    print("de studio scraped successfully")
     return movies
 
 
@@ -103,6 +107,8 @@ def scrape_lumieres_and_cartoons(name, url):
                           'No category found', ticket_url, description)
 
             movies.append(movie)
+
+    print("cartoon or lumiere scraped successfully")
     return movies
 
 def getMoreInfo(url):
