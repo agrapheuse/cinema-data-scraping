@@ -45,7 +45,7 @@ def scrape_de_cinema():
             link = ticket_div.find("a")["href"]
         description = div.find("div", {"class": "views-field views-field-body"}).text
 
-        movie = Movie(date_time, 'De Studio', 'Belgium', 'Antwerp', image_url, name, info_link, director, 
+        movie = Movie(date_time, 'c9d4c053-49b6-410c-bc78-2d54a9991870', image_url, name, info_link, director,
                       category, link, description)        
         
         movies.append(movie)
@@ -56,12 +56,12 @@ def scrape_de_cinema():
 
 def scrape_lumieres():
     url = 'https://www.lumiere-antwerpen.be/agenda-lumiere-antwerpen/'
-    return scrape_lumieres_and_cartoons("lumières", url)
+    return scrape_lumieres_and_cartoons("a6479f2a-963b-490f-ba92-6bdb99eb1f04", url)
 
 
 def scrape_cartoons():
     url = 'https://cinemacartoons.be/agenda-cinema-cartoons/'
-    return scrape_lumieres_and_cartoons("cartoons", url)
+    return scrape_lumieres_and_cartoons("8b659e03-0435-485b-8f77-9dff6e1f40e6", url)
 
 
 def scrape_lumieres_and_cartoons(name, url):
@@ -103,7 +103,7 @@ def scrape_lumieres_and_cartoons(name, url):
 
             director, description = getMoreInfo(info_url)
 
-            movie = Movie(date_time, name, 'Belgium', 'Antwerp', image_url, title, info_url, director,
+            movie = Movie(date_time, name, image_url, title, info_url, director,
                           'No category found', ticket_url, description)
 
             movies.append(movie)

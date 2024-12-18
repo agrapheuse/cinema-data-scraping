@@ -20,7 +20,7 @@ DROP TABLE IF EXISTS movies
 """
 
 empty_table_query = """
-TRUNCATE TABLE movies
+TRUNCATE TABLE movies;
 """
 
 alter_table_query = """
@@ -28,7 +28,7 @@ ALTER TABLE movies MODIFY description TEXT NOT NULL
 """
 
 insert_query = """
-INSERT INTO movies (uuid, title, director, category, description, cinema, country, city, date_time, image_url, info_link, ticket_link)
-VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+INSERT INTO movies (uuid, title, director, category, description, cinemaId, date_time, image_url, info_link, ticket_link)
+VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
 """
 
