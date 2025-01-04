@@ -3,11 +3,13 @@ from db.queries import *
 from scraping.scrape_movie_agendas import scrape_movie_agendas
 import uuid
 
+# run_query(create_table_query)
 # empty the table
 run_query(empty_table_query)
 
 # scrape the data
 movies = scrape_movie_agendas()
+print(movies)
 
 # insert the data
 #'''

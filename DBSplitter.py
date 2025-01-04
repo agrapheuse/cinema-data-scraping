@@ -8,7 +8,7 @@ from sqlalchemy.orm import sessionmaker
 metadata = MetaData()
 
 raw_showing_data = Table(
-    "RawShowingInfo",
+    "RawMovieData",
     metadata,
     Column('uuid', CHAR(36), primary_key=True, default=lambda: str(uuid.uuid4())),
     Column('title', VARCHAR(255)),
@@ -37,8 +37,8 @@ showings = Table(
     "Showings",
     metadata,
     Column('uuid', CHAR(36), primary_key=True, default=lambda: str(uuid.uuid4())),
-    Column('movie_id', VARCHAR(36)),
-    Column('cinema_id', VARCHAR(36)),
+    Column('MovieId', VARCHAR(36)),
+    Column('CinemaId', VARCHAR(36)),
     Column('date_time', DATETIME()),
     Column('info_link', VARCHAR(255)),
     Column('ticket_link', VARCHAR(255)),
@@ -70,7 +70,7 @@ try:
         description = row[4]
         image_url = row[6]
 
-        movie_key = (title, director, category)
+        movie_key = (title, director)
         if movie_key not in movies_data:
             movies_data[movie_key] = {
                 "uuid": str(uuid.uuid4()),
@@ -96,17 +96,20 @@ try:
         info_link = row[7]
         ticket_link = row[8]
 
-        movie_key = (title, director, category)
+        movie_key = (title, director)
         movie_uuid = movies_data[movie_key]["uuid"]
+        print(movie_uuid)
 
         showing_data = {
             "uuid": str(uuid.uuid4()),
-            "movie_id": movie_uuid,
-            "cinema_id": cinema_id,
+            "MovieId": movie_uuid,
+            "CinemaId": cinema_id,
             "date_time": date_time,
             "info_link": info_link,
             "ticket_link": ticket_link,
         }
+
+        print(showing_data)
         session.execute(insert(showings).values(**showing_data))
     session.commit()
 
