@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from scraping.convert_to_datetime import convert_to_datetime
-from model.Movie import Movie
+from model.MovieShowingRaw import MovieShowingRaw
 
 
 def scrape_de_cinema():
@@ -45,8 +45,8 @@ def scrape_de_cinema():
             link = ticket_div.find("a")["href"]
         description = div.find("div", {"class": "views-field views-field-body"}).text
 
-        movie = Movie(date_time, 'c9d4c053-49b6-410c-bc78-2d54a9991870', image_url, name, info_link, director,
-                      category, link, description)        
+        movie = MovieShowingRaw(date_time, 'c9d4c053-49b6-410c-bc78-2d54a9991870', image_url, name, info_link, director,
+                                category, link, description)
         
         movies.append(movie)
 
@@ -103,7 +103,7 @@ def scrape_lumieres_and_cartoons(name, url):
 
             director, description = getMoreInfo(info_url)
 
-            movie = Movie(date_time, name, image_url, title, info_url, director,
+            movie = MovieShowingRaw(date_time, name, image_url, title, info_url, director,
                           'No category found', ticket_url, description)
 
             movies.append(movie)
