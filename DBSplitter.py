@@ -4,6 +4,8 @@ from sqlalchemy import select, insert
 from sqlalchemy.dialects.mysql import CHAR, VARCHAR, LONGTEXT, DATETIME
 from sqlalchemy.orm import sessionmaker
 
+from TMDBAPI import getID, getImage
+
 metadata = MetaData()
 
 raw_showing_data = Table(
@@ -69,6 +71,10 @@ try:
         description = row[4]
         image_url = row[7]
         cinema_id = row[5]
+
+        if image_url == "poster":
+            tmdb_id = getID(title)
+            image_url = getImage(tmdb_id)
 
         movie_key = (title, director, cinema_id)
         if movie_key not in movies_data:

@@ -27,6 +27,9 @@ def scrape_de_cinema():
 
         name_div = div.find("div", {"class": "views-field views-field-title"})
         name = name_div.text
+
+        if '(' in name:
+            print(name)
         info_link = "https://www.destudio.com" + name_div.find("a")['href']
 
         director = div.find("div", {"class": "views-field views-field-field-subtitle"})
@@ -38,7 +41,7 @@ def scrape_de_cinema():
 
         category = div.find("div", {"class": "views-field views-field-field-categorie"}).text
         if category.lower() != "film":
-            break
+            continue
         ticket_div = div.find("div", {"class": "views-field views-field-field-ticket-link"})
         link = ""
         if ticket_div.find("a"):
@@ -81,11 +84,7 @@ def scrape_lumieres_and_cartoons(name, url):
 
         formatted_url = url.split(".be/")[0] + '.be/'
         for movie in movie_div:
-            images = movie.findAll("img")
-            image_url = ""
-            for i in images:
-                if formatted_url in i["src"]:
-                    image_url = i["src"]
+            image_url = "poster"
 
             info_url = formatted_url + movie.find("a")['href']
 
