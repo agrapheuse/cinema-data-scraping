@@ -28,8 +28,6 @@ def scrape_de_cinema():
         name_div = div.find("div", {"class": "views-field views-field-title"})
         name = name_div.text
 
-        if '(' in name:
-            print(name)
         info_link = "https://www.destudio.com" + name_div.find("a")['href']
 
         director = div.find("div", {"class": "views-field views-field-field-subtitle"})

@@ -3,8 +3,13 @@ from sqlalchemy import create_engine, MetaData, Table, Column
 from sqlalchemy import select, insert
 from sqlalchemy.dialects.mysql import CHAR, VARCHAR, LONGTEXT, DATETIME
 from sqlalchemy.orm import sessionmaker
+import re
 
-from TMDBAPI import getID, getImage
+from TMDBAPI import getID, getImage, getConfig
+
+
+def remove_parentheses_content(title):
+    return re.sub(r'\s*\(.*?\)', '', title).strip()
 
 metadata = MetaData()
 
@@ -62,6 +67,8 @@ try:
     # Step 1: Query all data from RawShowingInfo
     raw_data = session.execute(select(raw_showing_data)).fetchall()
 
+    base_url = getConfig()
+
     # Step 3: Extract unique movies
     movies_data = {}
     for row in raw_data:
@@ -71,10 +78,6 @@ try:
         description = row[4]
         image_url = row[7]
         cinema_id = row[5]
-
-        if image_url == "poster":
-            tmdb_id = getID(title)
-            image_url = getImage(tmdb_id)
 
         movie_key = (title, director, cinema_id)
         if movie_key not in movies_data:
@@ -90,6 +93,26 @@ try:
 
     # Insert unique movies into Movies table
     for movie in movies_data.values():
+        if movie.get("image_url") == "poster":
+            tmdb_id = getID(movie.get("title"))
+
+            # Retry after cleaning the title if tmdb_id is None
+            if tmdb_id is None:
+                print(f"Checking title for parentheses: {movie.get('title')}")
+                if '(' in movie.get("title") and ')' in movie.get("title"):
+                    print("Parentheses detected, removing them...")
+                    cleaned_title = remove_parentheses_content(movie.get("title"))
+                    tmdb_id = getID(cleaned_title)
+                    print(f"TMDB ID after cleaning: {tmdb_id}")
+
+            # Fetch image URL if tmdb_id is available
+            if tmdb_id is not None:
+                image_url = getImage(tmdb_id, base_url)
+                movie["image_url"] = image_url  # Update the movie's image_url
+            else:
+                print(f"Failed to fetch TMDB ID for title: {movie.get('title')}")
+
+        # Insert the movie into the Movies table
         session.execute(insert(movies).values(**movie))
     session.commit()
 

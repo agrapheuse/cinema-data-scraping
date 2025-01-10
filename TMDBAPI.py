@@ -24,19 +24,16 @@ def getID(title):
             movie_id = results[0].get("id")
             return movie_id
         else:
-            print(title, data)
             print("No results found.")
             return None
     else:
         print(f"Error: {response.status_code} - {response.text}")
         return None
 
-def getImage(id):
+def getConfig():
     load_dotenv()
 
     tmdb_api_key = os.environ.get("TMDB_API_KEY", "no api key found")
-
-    url = "https://api.themoviedb.org/3/movie/" + str(id) + "/images"
     config_url = "http://api.themoviedb.org/3/configuration"
 
     headers = {
@@ -45,13 +42,27 @@ def getImage(id):
     }
 
     config_res = requests.get(config_url, headers=headers)
-    image_res = requests.get(url, headers=headers)
     base_url = ""
 
     if config_res.status_code == 200:
-        base_url = config_res.json().get("images").get("base_url")
+        base_url = config_res.json().get("images").get("secure_base_url")
+    return base_url + "w780"
+
+def getImage(id, base_url):
+    load_dotenv()
+
+    tmdb_api_key = os.environ.get("TMDB_API_KEY", "no api key found")
+
+    url = "https://api.themoviedb.org/3/movie/" + str(id) + "/images"
+
+    headers = {
+        "accept": "application/json",
+        "Authorization": "Bearer " + tmdb_api_key
+    }
+
+    image_res = requests.get(url, headers=headers)
 
     if image_res.status_code == 200:
         data = image_res.json()
-        img_path = data.get("backdrops")[0].get("file_path")
-        return base_url + img_path
+        backdrop = data.get("backdrops")[0].get("file_path")
+        return base_url + backdrop
